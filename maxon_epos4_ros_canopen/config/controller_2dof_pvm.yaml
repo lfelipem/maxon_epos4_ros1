@@ -2,7 +2,8 @@ joint_names: [base_link1_joint, base_link2_joint]
 
 joint_state_controller:
     type: joint_state_controller/JointStateController
-    publish_rate: 50
+    publish_rate: 10
+    #publish_rate: 50
 
 ## velocity controller
 joint_group_velocity_controller:
