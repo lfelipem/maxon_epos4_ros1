@@ -9,9 +9,10 @@
 
 import rospy
 import math
-from std_msgs.msg import Float64 
+from std_msgs.msg import Float64
+from sbus_serial.msg import Sbus
 
-def epos4_cmd():
+"""def epos4_cmd():
     rospy.init_node('maxon_epos4_ros_canopen_python_example', anonymous=True) # initialize the ROS node
     pub_vel1 = rospy.Publisher('/maxon/canopen_motor/base_link1_joint_velocity_controller/command', Float64, queue_size=1) # define a publisher for link1
     pub_vel2 = rospy.Publisher('/maxon/canopen_motor/base_link2_joint_velocity_controller/command', Float64, queue_size=1) # define a publisher for link2
@@ -32,4 +33,28 @@ if __name__ == '__main__':
     try:
         epos4_cmd() # call the loop function
     except rospy.ROSInterruptException:
-        pass
+        pass"""
+
+
+def sbus_callback(sbus_data):
+    # Process the SBUS data to extract motor control values
+    # Implement your SBUS parsing logic here
+
+    # Publish the motor control command
+    motor_command = sbus_data.mappedChannels[2]  # Replace with the appropriate SBUS channel for motor control
+    print(motor_command)
+    pub_vel1.publish(motor_command)  # Replace with the actual motor control value
+    pub_vel2.publish(motor_command)
+
+if __name__ == '__main__':
+    rospy.init_node('maxon_epos4_ros_canopen_python_example', anonymous=True) # initialize the ROS node
+    
+    # Create a publisher for motor control commands
+    pub_vel1 = rospy.Publisher('/maxon/canopen_motor/base_link1_joint_velocity_controller/command', Float64, queue_size=1) # define a publisher for link1
+    pub_vel2 = rospy.Publisher('/maxon/canopen_motor/base_link2_joint_velocity_controller/command', Float64, queue_size=1) # define a publisher for link2
+
+    # Subscribe to the SBUS data topic
+    rospy.Subscriber('sbus', Sbus, sbus_callback)
+
+    rospy.spin()
+
