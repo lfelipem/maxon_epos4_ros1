@@ -13,8 +13,8 @@ from std_msgs.msg import Float64
 from sbus_serial.msg import Sbus
 import pigpio
 
-scale_low = 1
-scale_high = 2
+scale_low = 8
+scale_high = 20
 
 #Use pin 12 (BCM 18) for PWM signal
 servo = 18
@@ -54,17 +54,17 @@ def sbus_callback(sbus_data, args):
 
     if scale_button<-50:
         if abs(diff_command)>20:
-            v1 = (diff_command)   # v1 => port (bombordo)
-            v2 = -(diff_command)  # v2 => starbord (estibordo)
+            v1 = 3*(diff_command)   # v1 => port (bombordo)
+            v2 = 3*(diff_command)  # v2 => starbord (estibordo)
         else:
             v1 = 0
             v2 = 0
     elif scale_button<50:
         v1 = scale_low*((diff_command/100 * thrust_command) + thrust_command)   # v1 => port (bombordo)
-        v2 = scale_low*((-diff_command/100 * thrust_command) + thrust_command)  # v2 => starbord (estibordo)
+        v2 = -scale_low*((-diff_command/100 * thrust_command) + thrust_command)  # v2 => starbord (estibordo)
     else:
         v1 = scale_high*((diff_command/100 * thrust_command) + thrust_command)   # v1 => port (bombordo)
-        v2 = scale_high*((-diff_command/100 * thrust_command) + thrust_command)  # v2 => starbord (estibordo)
+        v2 = -scale_high*((-diff_command/100 * thrust_command) + thrust_command)  # v2 => starbord (estibordo)
     
     print("Thrust: " + str (thrust_command) + " | Diff: " + str(diff_command) 
           + " | V1: " + str(v1) + "  V2: " + str(v2) + " | Leme: " + str(rudder_command))
